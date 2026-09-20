@@ -1,0 +1,74 @@
+name: test + sdiff check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .[dev]
+      - run: pytest -q
+
+  # Dogfoods sdiff as a PR check: for every OpenAPI spec file under examples/
+  # touched by this PR, diffs the base-branch version against the PR's
+  # version and fails the check if sdiff classifies any change as BREAKING.
+  sdiff-check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: Diff changed spec files against base branch
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -e
+          changed=$(git diff --name-only "$BASE_SHA" HEAD -- examples/)
+          if [ -z "$changed" ]; then
+            echo "No example spec files changed, nothing to check."
+            exit 0
+          fi
+
+          status=0
+          for f in $changed; do
+            if [ ! -f "$f" ]; then
+              echo "skip $f (removed in this PR)"
+              continue
+            fi
+            # ponytail: basename-keyed tmp file, breaks if two changed files
+            # share a basename across subdirs; examples/ is flat, fine for now.
+            base_copy="/tmp/base_$(basename "$f")"
+            if ! git show "$BASE_SHA:$f" > "$base_copy" 2>/dev/null; then
+              echo "skip $f (new file in this PR, nothing to diff against)"
+              continue
+            fi
+
+            echo "::group::sdiff $f"
+            if python sdiff.py "$base_copy" "$f" --judge chat; then
+              rc=0
+            else
+              rc=$?
+            fi
+            echo "::endgroup::"
+
+            if [ "$rc" -eq 1 ]; then
+              echo "::error file=$f::sdiff found a BREAKING change"
+              status=1
+            elif [ "$rc" -ge 2 ]; then
+              echo "::error file=$f::sdiff failed (exit $rc)"
+              status=$rc
+            fi
+          done
+          exit $status

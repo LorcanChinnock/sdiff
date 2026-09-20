@@ -13,8 +13,10 @@ $ sdiff v1.yaml v2.yaml
 
 ![demo](demo.gif)
 
-CI runs this exact command on every push — see the [Actions tab](../../actions)
-or `.github/workflows/demo.yml` for the always-current real output.
+This repo dogfoods itself as a PR check: `.github/workflows/sdiff-check.yml`
+runs `sdiff` on every PR that touches `examples/`, diffing each changed spec
+file against its base-branch version, and fails the check if it finds a
+BREAKING change. See the [Actions tab](../../actions) for real runs.
 
 ## How it works — strict 3-stage pipeline
 
