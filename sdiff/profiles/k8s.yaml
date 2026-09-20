@@ -1,0 +1,68 @@
+name: k8s
+detect:
+  keys: [apiVersion, kind]
+  files: ["*.k8s.*", "values.yaml", "values-*.yaml"]
+subject: "Kubernetes manifest change"
+audience: "the workload's operators and users"
+align_keys: [name, id, key]
+state_note: >-
+  old=None means this field did not exist before (a pure addition). new=None
+  means it was removed. Adding a new OPTIONAL field with a sane default is
+  not breaking on its own.
+kinds:
+  breaking: >-
+    The workload would fail to schedule, crash-loop, or become unreachable
+    against the new manifest (e.g. bad image tag, broken probe, missing
+    required env var, RBAC that blocks a needed action).
+  behaviour: >-
+    The workload still runs, but its runtime behavior or resource footprint
+    changes in a way that may be noticed (replicas, resource limits, probe
+    timing, rollout strategy).
+  cosmetic: >-
+    Labels, annotations, or comments only; no effect on scheduling or
+    runtime behavior.
+reasons:
+  removed:
+    criteria: "The field was removed entirely (new=None)."
+    template: "{path} was removed"
+  added_optional:
+    criteria: "A new OPTIONAL field with a safe default was added (old=None)."
+    template: "{path} was added (optional)"
+  added_required:
+    criteria: "A new field was added that the workload now requires to schedule or run (old=None)."
+    template: "{path} was added and is now required; rollouts without it now fail"
+  optional_to_required:
+    criteria: "An existing optional field became required."
+    template: "{path} changed optional -> required"
+  type_changed:
+    criteria: "The data type of an EXISTING field changed (e.g. string -> integer). Not for old=None."
+    template: "{path} type changed {old} -> {new}"
+  enum_narrowed:
+    criteria: "The set of allowed values shrank."
+    template: "{path} allowed values narrowed: {old} -> {new}"
+  default_changed:
+    criteria: "A default value changed."
+    template: "{path} default changed {old} -> {new}"
+  constraint_tightened:
+    criteria: "A limit on an EXISTING field got stricter (e.g. resource limit lowered, replicas reduced). Not for old=None."
+    template: "{path} constraint tightened: {old} -> {new}"
+  constraint_loosened:
+    criteria: "A limit on an EXISTING field got looser (e.g. resource limit raised, replicas increased)."
+    template: "{path} constraint loosened: {old} -> {new}"
+  doc_only:
+    criteria: "Only a label, annotation, or comment changed."
+    template: "{path} documentation only, no functional change"
+  other:
+    criteria: "None of the above describes it well."
+    template: "{path} changed {old} -> {new}"
+nouls:
+  client_code_must_change: "Would deployment tooling or dependent workloads need to change to keep working?"
+  old_requests_still_valid: "Would the old manifest still produce a working, schedulable workload under the new expectations?"
+  doc_or_example_only: "Is this change limited to labels, annotations, or comments, with no effect on scheduling or runtime behavior?"
+rules:
+  - glob: "*.annotations.*"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.labels.*"
+    kind: cosmetic
+    reason: doc_only

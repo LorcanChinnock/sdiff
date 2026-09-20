@@ -1,12 +1,12 @@
 [project]
 name = "sdiff"
-version = "0.1.0"
-description = "Diff two OpenAPI specs and classify every change as BREAKING, BEHAVIOUR, or COSMETIC"
+version = "0.2.0"
+description = "Diff two structured files (OpenAPI, Kubernetes manifests, config, or anything else via a profile) and classify every change as BREAKING, BEHAVIOUR, or COSMETIC"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 license = "MIT"
 authors = [{ name = "Lorcan Chinnock", email = "ljchinnock@gmail.com" }]
-keywords = ["openapi", "diff", "api-breaking-change", "llm-eval", "cli"]
+keywords = ["diff", "structured-diff", "openapi", "kubernetes", "breaking-change", "llm-eval", "cli"]
 dependencies = [
     "typesafe-sdk",
     "PyYAML",
@@ -19,5 +19,11 @@ Repository = "https://github.com/LorcanChinnock/sdiff"
 [project.optional-dependencies]
 dev = ["pytest"]
 
-[tool.setuptools]
-py-modules = ["sdiff"]
+[project.scripts]
+sdiff = "sdiff:main"
+
+[tool.setuptools.packages.find]
+include = ["sdiff*"]
+
+[tool.setuptools.package-data]
+sdiff = ["profiles/*.yaml"]

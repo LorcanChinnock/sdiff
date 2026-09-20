@@ -56,7 +56,7 @@ jobs:
             fi
 
             echo "::group::sdiff $f"
-            if python sdiff.py "$base_copy" "$f" --judge chat; then
+            if python -m sdiff "$base_copy" "$f" --judge chat; then
               rc=0
             else
               rc=$?
