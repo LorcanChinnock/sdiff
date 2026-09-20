@@ -1,0 +1,66 @@
+name: generic
+detect:
+  keys: []
+  files: []
+subject: "structured data change"
+audience: "consumers of this data"
+align_keys: [name, id, key]
+state_note: >-
+  old=None means this path did not exist before (a pure addition). new=None
+  means it was removed. Adding a new value at a path nothing else depends on
+  is not breaking on its own.
+kinds:
+  breaking: >-
+    Code or systems reading this data would fail, crash, or behave
+    incorrectly against the new version.
+  behaviour: >-
+    Consumers still work, but the data or behavior they see differs in a
+    way that may be noticed.
+  cosmetic: >-
+    Wording, formatting, or ordering only; no functional effect on any
+    consumer.
+reasons:
+  removed:
+    criteria: "The key or value was removed entirely (new=None)."
+    template: "{path} was removed"
+  added_optional:
+    criteria: "A new value was added that nothing currently depends on (old=None)."
+    template: "{path} was added"
+  added_required:
+    criteria: "A new value was added that consumers are now required to handle (old=None)."
+    template: "{path} was added and now required; consumers that skip it now fail"
+  optional_to_required:
+    criteria: "An existing optional value became mandatory."
+    template: "{path} changed optional -> required"
+  type_changed:
+    criteria: "The data type of an EXISTING value changed (e.g. string -> integer). Not for old=None."
+    template: "{path} type changed {old} -> {new}"
+  enum_narrowed:
+    criteria: "The set of allowed values shrank."
+    template: "{path} allowed values narrowed: {old} -> {new}"
+  default_changed:
+    criteria: "A default value changed."
+    template: "{path} default changed {old} -> {new}"
+  constraint_tightened:
+    criteria: "A limit on an EXISTING value got stricter (e.g. max lowered, min raised). Not for old=None."
+    template: "{path} constraint tightened: {old} -> {new}"
+  constraint_loosened:
+    criteria: "A limit on an EXISTING value got looser (e.g. max raised, min lowered)."
+    template: "{path} constraint loosened: {old} -> {new}"
+  doc_only:
+    criteria: "Only a comment, description, or label changed."
+    template: "{path} documentation only, no functional change"
+  other:
+    criteria: "None of the above describes it well."
+    template: "{path} changed {old} -> {new}"
+nouls:
+  client_code_must_change: "Would existing code reading this data need to change to keep working?"
+  old_requests_still_valid: "Would data valid under the old version still be valid under the new version?"
+  doc_or_example_only: "Is this change limited to comments, descriptions, or labels, with no effect on behavior?"
+rules:
+  - glob: "*.description"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.comment"
+    kind: cosmetic
+    reason: doc_only

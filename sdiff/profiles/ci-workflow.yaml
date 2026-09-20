@@ -1,0 +1,70 @@
+name: ci-workflow
+detect:
+  keys: [jobs, on, stages]
+  files: [".github/workflows/*.yml", ".github/workflows/*.yaml", ".gitlab-ci.yml"]
+subject: "CI workflow change"
+audience: "the pipeline and its maintainers"
+align_keys: [name, id, key]
+state_note: >-
+  old=None means this key did not exist before (a pure addition). new=None
+  means it was removed. Adding a new OPTIONAL step or job is not breaking
+  on its own.
+kinds:
+  breaking: >-
+    A job, required check, or step that other automation depends on would
+    stop running or stop gating merges (a removed job, a removed required
+    check, a trigger narrowed so the workflow no longer runs when
+    expected).
+  behaviour: >-
+    The pipeline still runs, but what it does or what it can access
+    changed in a way that may be noticed (permissions widened, a secret
+    newly exposed to a less-trusted trigger, a step reordered around a
+    side effect, a schedule changed).
+  cosmetic: >-
+    Step or job display names, comments, or formatting only; no effect on
+    what runs or what it can access.
+reasons:
+  removed:
+    criteria: "The job, step, or trigger was removed entirely (new=None)."
+    template: "{path} was removed"
+  added_optional:
+    criteria: "A new OPTIONAL job or step was added (old=None)."
+    template: "{path} was added"
+  added_required:
+    criteria: "A new job or step was added and other automation now depends on it (old=None)."
+    template: "{path} was added and is now required; runs without it now fail the check"
+  optional_to_required:
+    criteria: "An existing optional check became required to merge."
+    template: "{path} changed optional -> required"
+  type_changed:
+    criteria: "The trigger, runner, or action version for an EXISTING job changed. Not for old=None."
+    template: "{path} changed {old} -> {new}"
+  enum_narrowed:
+    criteria: "The set of branches, events, or paths that trigger this workflow shrank."
+    template: "{path} trigger narrowed: {old} -> {new}"
+  default_changed:
+    criteria: "A default input, env var, or schedule value changed."
+    template: "{path} default changed {old} -> {new}"
+  constraint_tightened:
+    criteria: "Permissions or scope got MORE restrictive for an EXISTING job (e.g. write -> read). Not for old=None."
+    template: "{path} constraint tightened: {old} -> {new}"
+  constraint_loosened:
+    criteria: "Permissions or scope got LESS restrictive (e.g. read -> write, a new secret exposed, a trigger widened to more branches or forks)."
+    template: "{path} constraint loosened: {old} -> {new}"
+  doc_only:
+    criteria: "Only a display name, comment, or formatting changed."
+    template: "{path} documentation only, no functional change"
+  other:
+    criteria: "None of the above describes it well."
+    template: "{path} changed {old} -> {new}"
+nouls:
+  client_code_must_change: "Would other automation or branch-protection rules need to change to keep working?"
+  old_requests_still_valid: "Would a run that succeeded under the old workflow still succeed, unchanged, under the new one?"
+  doc_or_example_only: "Is this change limited to display names, comments, or formatting, with no effect on what runs?"
+rules:
+  - glob: "*.name"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.display_name"
+    kind: cosmetic
+    reason: doc_only

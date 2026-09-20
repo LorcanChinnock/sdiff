@@ -1,0 +1,69 @@
+name: openapi
+detect:
+  keys: [openapi, swagger]
+  files: ["*openapi*", "*swagger*"]
+subject: "OpenAPI spec change"
+audience: "API consumers"
+align_keys: [name, operationId, id, key]
+state_note: >-
+  old=None means this path did not exist before (a pure addition). new=None
+  means it was removed. Adding a new OPTIONAL field, parameter, or schema is
+  not breaking on its own.
+kinds:
+  breaking: >-
+    Old client requests or responses would fail or behave incorrectly
+    against the new spec.
+  behaviour: >-
+    Requests still work, but data or behavior returned or accepted differs
+    in a way callers may notice.
+  cosmetic: >-
+    Wording, description, or ordering only; no functional effect on
+    requests or responses.
+reasons:
+  removed:
+    criteria: "The field, parameter, or path was removed entirely (new=None)."
+    template: "{path} was removed"
+  added_optional:
+    criteria: "A new OPTIONAL field, parameter, or schema was added (old=None, not in `required`)."
+    template: "{path} was added (optional)"
+  added_required:
+    criteria: "A new REQUIRED field or parameter was added (old=None, in `required`)."
+    template: "{path} was added as required; requests without it now fail"
+  optional_to_required:
+    criteria: "An existing field or parameter became required."
+    template: "{path} changed optional -> required"
+  type_changed:
+    criteria: "The data type of an EXISTING field changed (e.g. string -> integer). Not for old=None."
+    template: "{path} type changed {old} -> {new}"
+  enum_narrowed:
+    criteria: "The set of allowed values shrank."
+    template: "{path} allowed values narrowed: {old} -> {new}"
+  default_changed:
+    criteria: "A default value changed."
+    template: "{path} default changed {old} -> {new}"
+  constraint_tightened:
+    criteria: "A limit on an EXISTING field got stricter (e.g. max lowered, min raised). Not for old=None."
+    template: "{path} constraint tightened: {old} -> {new}"
+  constraint_loosened:
+    criteria: "A limit on an EXISTING field got looser (e.g. max raised, min lowered)."
+    template: "{path} constraint loosened: {old} -> {new}"
+  doc_only:
+    criteria: "Only a description, summary, example, or comment changed."
+    template: "{path} documentation only, no functional change"
+  other:
+    criteria: "None of the above describes it well."
+    template: "{path} changed {old} -> {new}"
+nouls:
+  client_code_must_change: "Would existing client code need to change to keep working?"
+  old_requests_still_valid: "Would requests valid under the old spec still be valid under the new spec?"
+  doc_or_example_only: "Is this change limited to documentation, descriptions, or examples, with no effect on requests or responses?"
+rules:
+  - glob: "*.description"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.summary"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.example"
+    kind: cosmetic
+    reason: doc_only

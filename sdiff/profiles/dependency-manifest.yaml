@@ -1,0 +1,71 @@
+name: dependency-manifest
+detect:
+  keys: [dependencies, devDependencies]
+  files: ["package.json", "Cargo.toml", "go.mod", "pyproject.toml", "requirements*.txt"]
+subject: "dependency manifest change"
+audience: "the build and everything that consumes it"
+align_keys: [name, id, key]
+state_note: >-
+  old=None means this dependency did not exist before (a pure addition).
+  new=None means it was removed. Adding a new dependency is not breaking on
+  its own.
+kinds:
+  breaking: >-
+    The build would fail, or code using this dependency would fail or
+    behave incorrectly, against the new manifest (a removed dependency, a
+    major version bump, a raised language/runtime engine floor).
+  behaviour: >-
+    The build still works, but a dependency's behavior may differ in a way
+    that matters (a minor version bump, a widened version range).
+  cosmetic: >-
+    Lockfile metadata (resolved URL, integrity hash) or comments only; no
+    effect on what gets built or run.
+reasons:
+  removed:
+    criteria: "The dependency was removed entirely (new=None)."
+    template: "{path} was removed"
+  added_optional:
+    criteria: "A new dependency was added (old=None)."
+    template: "{path} was added"
+  added_required:
+    criteria: "A new dependency was added and the build now requires it to succeed (old=None)."
+    template: "{path} was added and is now required; builds without it now fail"
+  optional_to_required:
+    criteria: "An existing optional dependency became required."
+    template: "{path} changed optional -> required"
+  type_changed:
+    criteria: "A major version was crossed for an EXISTING dependency (e.g. 1.x -> 2.x). Not for old=None."
+    template: "{path} major version changed {old} -> {new}"
+  enum_narrowed:
+    criteria: "The set of acceptable versions or platforms shrank."
+    template: "{path} acceptable range narrowed: {old} -> {new}"
+  default_changed:
+    criteria: "A default resolved version changed without a version-range change."
+    template: "{path} resolved version changed {old} -> {new}"
+  constraint_tightened:
+    criteria: "A version range or engine/runtime floor got stricter (e.g. minimum Node/Python version raised). Not for old=None."
+    template: "{path} constraint tightened: {old} -> {new}"
+  constraint_loosened:
+    criteria: "A version range got looser, including a minor/patch bump within the same major version."
+    template: "{path} constraint loosened: {old} -> {new}"
+  doc_only:
+    criteria: "Only a comment, resolved URL, or integrity hash changed with no version change."
+    template: "{path} documentation only, no functional change"
+  other:
+    criteria: "None of the above describes it well."
+    template: "{path} changed {old} -> {new}"
+nouls:
+  client_code_must_change: "Would code using this dependency need to change to keep working?"
+  old_requests_still_valid: "Would a build that worked under the old manifest still work under the new one?"
+  doc_or_example_only: "Is this change limited to lockfile metadata or comments, with no effect on what gets built?"
+rules:
+  - glob: "*.integrity"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.resolved"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "dependencies.*"
+    comparator: semver
+  - glob: "devDependencies.*"
+    comparator: semver

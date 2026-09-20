@@ -1,0 +1,68 @@
+name: config
+detect:
+  keys: []
+  files: [".env*", "config.*", "*.cfg", "*.ini", "settings.*"]
+subject: "application config change"
+audience: "the running application and its operators"
+align_keys: [name, id, key]
+state_note: >-
+  old=None means this setting did not exist before (a pure addition).
+  new=None means it was removed. Adding a new OPTIONAL setting with a safe
+  default is not breaking on its own.
+kinds:
+  breaking: >-
+    The application would fail to start, error at runtime, or silently
+    misbehave (e.g. wrong endpoint, missing secret, disabled required
+    feature) against the new config.
+  behaviour: >-
+    The application still runs, but runtime behavior changes in a way
+    operators or users may notice (timeout, limit, feature flag, log
+    level).
+  cosmetic: >-
+    Comments, formatting, or key ordering only; no effect on running
+    behavior.
+reasons:
+  removed:
+    criteria: "The setting was removed entirely (new=None)."
+    template: "{path} was removed"
+  added_optional:
+    criteria: "A new OPTIONAL setting with a safe default was added (old=None)."
+    template: "{path} was added (optional)"
+  added_required:
+    criteria: "A new setting was added that the application now requires to start or run (old=None)."
+    template: "{path} was added and is now required; deployments without it now fail"
+  optional_to_required:
+    criteria: "An existing optional setting became required."
+    template: "{path} changed optional -> required"
+  type_changed:
+    criteria: "The data type of an EXISTING setting changed (e.g. string -> integer). Not for old=None."
+    template: "{path} type changed {old} -> {new}"
+  enum_narrowed:
+    criteria: "The set of allowed values for this setting shrank."
+    template: "{path} allowed values narrowed: {old} -> {new}"
+  default_changed:
+    criteria: "A default value changed."
+    template: "{path} default changed {old} -> {new}"
+  constraint_tightened:
+    criteria: "A limit on an EXISTING setting got stricter (e.g. timeout lowered, max raised). Not for old=None."
+    template: "{path} constraint tightened: {old} -> {new}"
+  constraint_loosened:
+    criteria: "A limit on an EXISTING setting got looser (e.g. timeout raised, limit loosened)."
+    template: "{path} constraint loosened: {old} -> {new}"
+  doc_only:
+    criteria: "Only a comment or description changed."
+    template: "{path} documentation only, no functional change"
+  other:
+    criteria: "None of the above describes it well."
+    template: "{path} changed {old} -> {new}"
+nouls:
+  client_code_must_change: "Would the application's code or deployment need to change to keep working?"
+  old_requests_still_valid: "Would the old config still produce valid, working behavior under the new expectations?"
+  doc_or_example_only: "Is this change limited to comments or descriptions, with no effect on runtime behavior?"
+rules:
+  - glob: "*.description"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.comment"
+    kind: cosmetic
+    reason: doc_only

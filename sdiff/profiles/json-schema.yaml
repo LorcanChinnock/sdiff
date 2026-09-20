@@ -1,0 +1,74 @@
+name: json-schema
+detect:
+  keys: ["$schema", properties]
+  files: ["*.schema.json", "*.schema.yaml"]
+subject: "JSON Schema change"
+audience: "producers and validators of data against this schema"
+align_keys: [name, id, key]
+state_note: >-
+  old=None means this keyword did not exist before (a pure addition).
+  new=None means it was removed. Adding a new OPTIONAL property is not
+  breaking on its own.
+kinds:
+  breaking: >-
+    Data that validated successfully before would now fail validation
+    (a new required property, a narrowed enum, a tightened type or
+    pattern, additionalProperties turned false).
+  behaviour: >-
+    Validation still passes for old data, but the accepted or expected
+    shape changed in a way consumers may notice (a loosened constraint,
+    a new default).
+  cosmetic: >-
+    Title, description, $comment, or examples only; no effect on what
+    validates.
+reasons:
+  removed:
+    criteria: "The keyword or property was removed entirely (new=None)."
+    template: "{path} was removed"
+  added_optional:
+    criteria: "A new OPTIONAL property was added (old=None, not in `required`)."
+    template: "{path} was added (optional)"
+  added_required:
+    criteria: "A new REQUIRED property was added (old=None, in `required`)."
+    template: "{path} was added as required; data missing it now fails validation"
+  optional_to_required:
+    criteria: "An existing property became required."
+    template: "{path} changed optional -> required"
+  type_changed:
+    criteria: "The `type` of an EXISTING property changed (e.g. string -> integer). Not for old=None."
+    template: "{path} type changed {old} -> {new}"
+  enum_narrowed:
+    criteria: "The set of allowed values (enum) shrank."
+    template: "{path} allowed values narrowed: {old} -> {new}"
+  default_changed:
+    criteria: "A default value changed."
+    template: "{path} default changed {old} -> {new}"
+  constraint_tightened:
+    criteria: "A validation constraint got stricter (e.g. maxLength lowered, minimum raised, pattern narrowed, additionalProperties true -> false). Not for old=None."
+    template: "{path} constraint tightened: {old} -> {new}"
+  constraint_loosened:
+    criteria: "A validation constraint got looser (e.g. maxLength raised, minimum lowered, additionalProperties false -> true)."
+    template: "{path} constraint loosened: {old} -> {new}"
+  doc_only:
+    criteria: "Only title, description, $comment, or examples changed."
+    template: "{path} documentation only, no functional change"
+  other:
+    criteria: "None of the above describes it well."
+    template: "{path} changed {old} -> {new}"
+nouls:
+  client_code_must_change: "Would code producing or validating data against this schema need to change to keep working?"
+  old_requests_still_valid: "Would data that validated under the old schema still validate under the new schema?"
+  doc_or_example_only: "Is this change limited to title, description, $comment, or examples, with no effect on what validates?"
+rules:
+  - glob: "*.description"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.title"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.$comment"
+    kind: cosmetic
+    reason: doc_only
+  - glob: "*.examples"
+    kind: cosmetic
+    reason: doc_only
