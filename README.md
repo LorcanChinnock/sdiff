@@ -18,6 +18,25 @@ runs `sdiff` on every PR that touches `examples/`, diffing each changed spec
 file against its base-branch version, and fails the check if it finds a
 BREAKING change. See the [Actions tab](../../actions) for real runs.
 
+## Real-world use cases
+
+- **PR gate for a spec repo** (this repo does exactly this, see above):
+  block merges that silently break clients. Non-zero exit code is the
+  contract; wire it straight into CI, no output parsing needed.
+- **Consumer-driven contract checks**: before publishing a generated SDK,
+  diff the spec version it's built from against the previous release and
+  fail the publish job on any BREAKING result.
+- **Changelog triage for a fast-moving API**: point `sdiff` at two release
+  tags (like the Stripe example below) to separate the handful of changes
+  that need a release-notes callout from the hundreds that don't —
+  `COSMETIC N other changes` does that collapsing for you.
+- **Cross-team review aid**: a platform team reviewing a service team's spec
+  PR gets `--json` output to pipe into their own dashboard or bot comment,
+  instead of reading a multi-thousand-line spec diff by eye.
+- **Pre-deploy smoke check in a monorepo**: run it against every service's
+  spec in a loop (one pair per request, per Jev's own batching guidance) as
+  a cheap pre-deploy gate before a bigger integration test suite runs.
+
 ## How it works — strict 3-stage pipeline
 
 1. **Deterministic parse + align** (`sdiff.flatten`/`sdiff.diff`, no AI). Parses
