@@ -9,7 +9,7 @@ components:
       properties:
         city:
           description: City, district, suburb, town, or village.
-          maxLength: 5000
+          maxLength: 50
           nullable: true
           type: string
         country:
