@@ -13,6 +13,11 @@ $ sdiff v1.yaml v2.yaml
 
 ![demo](demo.gif)
 
+Try it without installing anything locally beyond Python: [`demo.ipynb`](demo.ipynb)
+runs the whole thing end to end against a bundled real example, prompts for
+an API key if `.env` doesn't have one, and has a cell to drop in your own
+spec pair.
+
 ## How it works — strict 3-stage pipeline
 
 1. **Deterministic parse + align** (`sdiff.flatten`/`sdiff.diff`, no AI). Parses
