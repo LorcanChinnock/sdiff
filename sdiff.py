@@ -24,34 +24,61 @@ from typing import NamedTuple
 
 import yaml
 
+
+def _load_dotenv(path: str = ".env") -> None:
+    """Minimal .env loader: KEY=value per line, no interpolation, existing
+    env vars win. # ponytail: no quoting/multiline support, add python-dotenv
+    if that's ever needed."""
+    if not os.path.exists(path):
+        return
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key, value = key.strip(), value.strip().strip('"').strip("'")
+            os.environ.setdefault(key, value)
+
+
+_load_dotenv()
+
 KINDS = ("breaking", "behaviour", "cosmetic")
 
 # Shared vocabulary for both judges, so Jev and the chat fallback are asked
 # the exact same question in substance.
+STATE_NOTE = (
+    "old=None means this path did not exist before (a pure addition). "
+    "new=None means it was removed. Adding a new OPTIONAL field, parameter, "
+    "or schema is not breaking on its own."
+)
+
 KIND_CRITERIA = {
     "breaking": "Old client requests or responses would fail or behave "
-                "incorrectly against the new spec.",
+                "incorrectly against the new spec. " + STATE_NOTE,
     "behaviour": "Requests still work, but data or behavior returned or "
-                 "accepted differs in a way callers may notice.",
+                 "accepted differs in a way callers may notice. " + STATE_NOTE,
     "cosmetic": "Wording, description, or ordering only; no functional "
-                "effect on requests or responses.",
+                "effect on requests or responses. " + STATE_NOTE,
 }
 
 REASON_CRITERIA = {
-    "removed": "The field, parameter, or path was removed entirely.",
-    "added_required": "A new required field or parameter was added.",
+    "removed": "The field, parameter, or path was removed entirely (new=None).",
+    "added_optional": "A new OPTIONAL field, parameter, or schema was added (old=None, not in `required`).",
+    "added_required": "A new REQUIRED field or parameter was added (old=None, in `required`).",
     "optional_to_required": "An existing field or parameter became required.",
-    "type_changed": "The data type changed (e.g. string -> integer).",
+    "type_changed": "The data type of an EXISTING field changed (e.g. string -> integer). Not for old=None.",
     "enum_narrowed": "The set of allowed values shrank.",
     "default_changed": "A default value changed.",
-    "constraint_tightened": "A limit got stricter (e.g. max lowered, min raised).",
-    "constraint_loosened": "A limit got looser (e.g. max raised, min lowered).",
+    "constraint_tightened": "A limit on an EXISTING field got stricter (e.g. max lowered, min raised). Not for old=None.",
+    "constraint_loosened": "A limit on an EXISTING field got looser (e.g. max raised, min lowered).",
     "doc_only": "Only a description, summary, example, or comment changed.",
     "other": "None of the above describes it well.",
 }
 
 REASON_TEMPLATES = {
     "removed": "{path} was removed",
+    "added_optional": "{path} was added (optional)",
     "added_required": "{path} was added as required; requests without it now fail",
     "optional_to_required": "{path} changed optional -> required",
     "type_changed": "{path} type changed {old} -> {new}",
@@ -307,11 +334,11 @@ def render(results: list[dict], json_output: bool) -> None:
 
     for r in breaking:
         label = f"BREAKING{r['flag']}"
-        print(f"  {label:<10}{r['path']:<45}{_value_str(r['old'])} -> {_value_str(r['new'])}")
+        print(f"  {label:<10}{r['path']:<45}  {_value_str(r['old'])} -> {_value_str(r['new'])}")
         print(f'            "{r["reason"]}"')
     for r in behaviour:
         label = f"BEHAVIOUR{r['flag']}"
-        print(f"  {label:<10}{r['path']:<45}{_value_str(r['old'])} -> {_value_str(r['new'])}")
+        print(f"  {label:<10}{r['path']:<45}  {_value_str(r['old'])} -> {_value_str(r['new'])}")
     if cosmetic:
         print(f"  COSMETIC  {len(cosmetic)} other changes")
 

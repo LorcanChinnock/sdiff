@@ -77,14 +77,56 @@ so the example below is reproducible without downloading the full ~8MB spec.
 
 ```
 $ sdiff examples/stripe-v2440.yaml examples/stripe-v2442.yaml --judge chat
-<PASTE REAL OUTPUT HERE — see note below>
+  BREAKING  components.schemas.address_api_resource_terminal.properties.city.maxLength  (absent) -> 5000
+            "components.schemas.address_api_resource_terminal.properties.city.maxLength constraint tightened: None -> 5000"
+  BREAKING  components.schemas.address_api_resource_terminal.properties.country.type  (absent) -> string
+            "components.schemas.address_api_resource_terminal.properties.country.type was added (optional)"
+  BREAKING  components.schemas.address_api_resource_terminal.properties.line1.maxLength  (absent) -> 5000
+            "components.schemas.address_api_resource_terminal.properties.line1.maxLength constraint tightened: None -> 5000"
+  BREAKING  components.schemas.address_api_resource_terminal.properties.line2.maxLength  (absent) -> 5000
+            "components.schemas.address_api_resource_terminal.properties.line2.maxLength constraint tightened: None -> 5000"
+  BREAKING  components.schemas.address_api_resource_terminal.properties.postal_code.maxLength  (absent) -> 5000
+            "components.schemas.address_api_resource_terminal.properties.postal_code.maxLength constraint tightened: None -> 5000"
+  BREAKING  components.schemas.address_api_resource_terminal.properties.postal_code.nullable  (absent) -> True
+            "components.schemas.address_api_resource_terminal.properties.postal_code.nullable constraint loosened: None -> True"
+  BREAKING  components.schemas.address_api_resource_terminal.properties.state.maxLength  (absent) -> 5000
+            "components.schemas.address_api_resource_terminal.properties.state.maxLength constraint tightened: None -> 5000"
+  BREAKING  components.schemas.checkout_us_bank_account_payment_method_options.properties.financial_connections.$ref  #/components/schemas/linked_account_options_common -> #/components/schemas/checkout_financial_connections_payment_method_options
+            "components.schemas.checkout_us_bank_account_payment_method_options.properties.financial_connections.$ref type changed #/components/schemas/linked_account_options_common -> #/components/schemas/checkout_financial_connections_payment_method_options"
+  BREAKING  components.schemas.connect_embedded_account_session_create_components.required  [...20 items...] -> [...21 items, +payment_method_settings...]
+            "components.schemas.connect_embedded_account_session_create_components.required was added as required; requests without it now fail"
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.city.nullable  (absent) -> True
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.city.type  (absent) -> string
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.country.maxLength  (absent) -> 5000
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.country.nullable  (absent) -> True
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.line1.nullable  (absent) -> True
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.line2.nullable  (absent) -> True
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.line2.type  (absent) -> string
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.postal_code.type  (absent) -> string
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.state.nullable  (absent) -> True
+  BEHAVIOUR components.schemas.address_api_resource_terminal.properties.state.type  (absent) -> string
+  BEHAVIOUR components.schemas.connect_embedded_account_session_create_components.properties.payment_method_settings.$ref  (absent) -> #/components/schemas/connect_embedded_payment_method_settings_config_claim
+  BEHAVIOUR components.schemas.connect_embedded_account_session_create_components.x-expandableFields  [...20 items...] -> [...21 items, +payment_method_settings...]
+  BEHAVIOUR!components.schemas.event.title                 NotificationEvent -> Event
+  COSMETIC  20 other changes
 ```
 
-**Note:** this run needs a working `TYPESAFE_API_KEY` (Jev) or
-`OPENROUTER_API_KEY` (chat fallback). Neither was available/valid in the
-sandbox this was built in — see the last message in this session for what's
-blocking it. Run the command above yourself once a key is set and drop the
-real output in place of the placeholder.
+Exit code: `1` (a BREAKING change is present).
+
+**Honest caveat, not swept under the rug:** this run used `--judge chat`
+against `openai/gpt-5-nano` — the cheap fallback, not Jev (no
+`TYPESAFE_API_KEY` was available in the sandbox this was built in). Look at
+`.city.type`, `.line2.type`, `.postal_code.type`, `.state.type` (all
+BEHAVIOUR) next to `.country.type` (BREAKING) — same schema, same kind of
+leaf (`old=None`, a pure addition), different verdict. That's a live example
+of Jev's own documented ["no structural invariance"](https://docs.typesafe.ai/model-jaggedness/jev-1.13.md)
+failure mode, not an `sdiff` bug: a small model doesn't reliably give the
+same answer to the same shape of question twice. It's exactly why the
+Noul cross-checks and the `?`/`!` flags exist (see `event.title`, flagged
+`!` — cosmetic-looking title casing that `client_code_must_change` scored
+high enough to escalate to BEHAVIOUR). Re-run with `--judge jev` for the
+purpose-built model this tool is designed around, once you have a
+`TYPESAFE_API_KEY`.
 
 ## Limitations (v0.1)
 
