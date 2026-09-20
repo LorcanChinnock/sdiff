@@ -11,8 +11,6 @@ $ sdiff v1.yaml v2.yaml
   COSMETIC  37 other changes
 ```
 
-![demo](demo.gif)
-
 `git diff` on a spec just shows you text. It won't tell you that bumping a
 default page size from 20 to 100 means every existing client suddenly pulls
 5x the data. sdiff parses both files, aligns the real structure, and asks
