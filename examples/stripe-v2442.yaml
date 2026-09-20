@@ -1,0 +1,1289 @@
+openapi: 3.0.0
+info:
+  title: Stripe API
+  version: 2026-08-26.dahlia
+components:
+  schemas:
+    address_api_resource_terminal:
+      description: ''
+      properties:
+        city:
+          description: City, district, suburb, town, or village.
+          maxLength: 5000
+          nullable: true
+          type: string
+        country:
+          description: Two-letter country code ([ISO 3166-1 alpha-2](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2)).
+          maxLength: 5000
+          nullable: true
+          type: string
+        line1:
+          description: Address line 1, such as the street, PO Box, or company name.
+          maxLength: 5000
+          nullable: true
+          type: string
+        line2:
+          description: Address line 2, such as the apartment, suite, unit, or building.
+          maxLength: 5000
+          nullable: true
+          type: string
+        postal_code:
+          description: ZIP or postal code.
+          maxLength: 5000
+          nullable: true
+          type: string
+        state:
+          description: State, county, province, or region ([ISO 3166-2](https://en.wikipedia.org/wiki/ISO_3166-2)).
+          maxLength: 5000
+          nullable: true
+          type: string
+      title: AddressAPIResourceTerminal
+      type: object
+      x-expandableFields: []
+    connect_embedded_account_session_create_components:
+      description: ''
+      properties:
+        account_management:
+          $ref: '#/components/schemas/connect_embedded_account_config_claim'
+        account_onboarding:
+          $ref: '#/components/schemas/connect_embedded_account_config_claim'
+        balance_report:
+          $ref: '#/components/schemas/connect_embedded_base_config_claim'
+        balances:
+          $ref: '#/components/schemas/connect_embedded_payouts_config'
+        disputes_list:
+          $ref: '#/components/schemas/connect_embedded_disputes_list_config'
+        documents:
+          $ref: '#/components/schemas/connect_embedded_base_config_claim'
+        financial_account:
+          $ref: '#/components/schemas/connect_embedded_financial_account_config_claim'
+        financial_account_transactions:
+          $ref: '#/components/schemas/connect_embedded_financial_account_transactions_config_claim'
+        instant_payouts_promotion:
+          $ref: '#/components/schemas/connect_embedded_instant_payouts_promotion_config'
+        issuing_card:
+          $ref: '#/components/schemas/connect_embedded_issuing_card_config_claim'
+        issuing_cards_list:
+          $ref: '#/components/schemas/connect_embedded_issuing_cards_list_config_claim'
+        notification_banner:
+          $ref: '#/components/schemas/connect_embedded_account_config_claim'
+        payment_details:
+          $ref: '#/components/schemas/connect_embedded_payments_config_claim'
+        payment_disputes:
+          $ref: '#/components/schemas/connect_embedded_payment_disputes_config'
+        payment_method_settings:
+          $ref: '#/components/schemas/connect_embedded_payment_method_settings_config_claim'
+        payments:
+          $ref: '#/components/schemas/connect_embedded_payments_config_claim'
+        payout_details:
+          $ref: '#/components/schemas/connect_embedded_base_config_claim'
+        payout_reconciliation_report:
+          $ref: '#/components/schemas/connect_embedded_base_config_claim'
+        payouts:
+          $ref: '#/components/schemas/connect_embedded_payouts_config'
+        payouts_list:
+          $ref: '#/components/schemas/connect_embedded_base_config_claim'
+        tax_registrations:
+          $ref: '#/components/schemas/connect_embedded_base_config_claim'
+        tax_settings:
+          $ref: '#/components/schemas/connect_embedded_base_config_claim'
+      required:
+      - account_management
+      - account_onboarding
+      - balance_report
+      - balances
+      - disputes_list
+      - documents
+      - financial_account
+      - financial_account_transactions
+      - instant_payouts_promotion
+      - issuing_card
+      - issuing_cards_list
+      - notification_banner
+      - payment_details
+      - payment_disputes
+      - payment_method_settings
+      - payments
+      - payout_details
+      - payout_reconciliation_report
+      - payouts
+      - payouts_list
+      - tax_registrations
+      - tax_settings
+      title: ConnectEmbeddedAccountSessionCreateComponents
+      type: object
+      x-expandableFields:
+      - account_management
+      - account_onboarding
+      - balance_report
+      - balances
+      - disputes_list
+      - documents
+      - financial_account
+      - financial_account_transactions
+      - instant_payouts_promotion
+      - issuing_card
+      - issuing_cards_list
+      - notification_banner
+      - payment_details
+      - payment_disputes
+      - payment_method_settings
+      - payments
+      - payout_details
+      - payout_reconciliation_report
+      - payouts
+      - payouts_list
+      - tax_registrations
+      - tax_settings
+    checkout_us_bank_account_payment_method_options:
+      description: ''
+      properties:
+        financial_connections:
+          $ref: '#/components/schemas/checkout_financial_connections_payment_method_options'
+        setup_future_usage:
+          description: 'Indicates that you intend to make future payments with this
+            PaymentIntent''s payment method.
+
+
+            If you provide a Customer with the PaymentIntent, you can use this parameter
+            to [attach the payment method](/payments/save-during-payment) to the Customer
+            after the PaymentIntent is confirmed and the customer completes any required
+            actions. If you don''t provide a Customer, you can still [attach](/api/payment_methods/attach)
+            the payment method to a Customer after the transaction completes.
+
+
+            If the payment method is `card_present` and isn''t a digital wallet, Stripe
+            creates and attaches a [generated_card](/api/charges/object#charge_object-payment_method_details-card_present-generated_card)
+            payment method representing the card to the Customer instead.
+
+
+            When processing card payments, Stripe uses `setup_future_usage` to help
+            you comply with regional legislation and network rules, such as [SCA](/strong-customer-authentication).'
+          enum:
+          - none
+          - off_session
+          - on_session
+          type: string
+        target_date:
+          description: Controls when Stripe will attempt to debit the funds from the
+            customer's account. The date must be a string in YYYY-MM-DD format. The
+            date must be in the future and between 3 and 15 calendar days from now.
+          maxLength: 5000
+          type: string
+        verification_method:
+          description: Bank account verification method. The default value is `automatic`.
+          enum:
+          - automatic
+          - instant
+          type: string
+          x-stripeBypassValidation: true
+      title: CheckoutUsBankAccountPaymentMethodOptions
+      type: object
+      x-expandableFields:
+      - financial_connections
+    account_link:
+      description: 'Account Links are the means by which a Connect platform grants
+        a connected account permission to access
+
+        Stripe-hosted applications, such as Connect Onboarding.
+
+
+        Related guide: [Connect Onboarding](https://docs.stripe.com/connect/custom/hosted-onboarding)'
+      properties:
+        created:
+          description: Time at which the object was created. Measured in seconds since
+            the Unix epoch.
+          format: unix-time
+          type: integer
+        expires_at:
+          description: The timestamp at which this account link will expire.
+          format: unix-time
+          type: integer
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - account_link
+          type: string
+        url:
+          description: The URL for the account link.
+          maxLength: 5000
+          type: string
+      required:
+      - created
+      - expires_at
+      - object
+      - url
+      title: Account Link
+      type: object
+      x-expandableFields: []
+      x-resourceId: account_link
+    account_session:
+      description: 'An AccountSession allows a Connect platform to grant access to
+        a connected account in Connect embedded components.
+
+
+        We recommend that you create an AccountSession each time you need to display
+        an embedded component
+
+        to your user. Do not save AccountSessions to your database as they expire
+        relatively
+
+        quickly, and cannot be used more than once.
+
+
+        Related guide: [Connect embedded components](https://docs.stripe.com/connect/get-started-connect-embedded-components)'
+      properties:
+        account:
+          description: The ID of the account the AccountSession was created for
+          maxLength: 5000
+          type: string
+        client_secret:
+          description: 'The client secret of this AccountSession. Used on the client
+            to set up secure access to the given `account`.
+
+
+            The client secret can be used to provide access to `account` from your
+            frontend. It should not be stored, logged, or exposed to anyone other
+            than the connected account. Make sure that you have TLS enabled on any
+            page that includes the client secret.
+
+
+            Refer to our docs to [setup Connect embedded components](https://docs.stripe.com/connect/get-started-connect-embedded-components)
+            and learn about how `client_secret` should be handled.'
+          maxLength: 5000
+          type: string
+        components:
+          $ref: '#/components/schemas/connect_embedded_account_session_create_components'
+        expires_at:
+          description: The timestamp at which this AccountSession will expire.
+          format: unix-time
+          type: integer
+        livemode:
+          description: If the object exists in live mode, the value is `true`. If
+            the object exists in test mode, the value is `false`.
+          type: boolean
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - account_session
+          type: string
+      required:
+      - account
+      - client_secret
+      - components
+      - expires_at
+      - livemode
+      - object
+      title: Account Session
+      type: object
+      x-expandableFields:
+      - components
+      x-resourceId: account_session
+    balance_transaction:
+      description: 'Balance transactions represent funds moving through your Stripe
+        account.
+
+        Stripe creates them for every type of transaction that enters or leaves your
+        Stripe account balance.
+
+
+        Related guide: [Balance transaction types](https://docs.stripe.com/reports/balance-transaction-types)'
+      properties:
+        amount:
+          description: Gross amount of this transaction (in cents (or local equivalent)).
+            A positive value represents funds charged to another party, and a negative
+            value represents funds sent to another party.
+          type: integer
+        available_on:
+          description: The date that the transaction's net funds become available
+            in the Stripe balance.
+          format: unix-time
+          type: integer
+        balance_type:
+          description: The balance that this transaction impacts.
+          enum:
+          - issuing
+          - payments
+          - refund_and_dispute_prefunding
+          - risk_reserved
+          type: string
+          x-stripeBypassValidation: true
+        created:
+          description: Time at which the object was created. Measured in seconds since
+            the Unix epoch.
+          format: unix-time
+          type: integer
+        currency:
+          description: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html),
+            in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).
+          format: currency
+          type: string
+        description:
+          description: An arbitrary string attached to the object. Often useful for
+            displaying to users.
+          maxLength: 5000
+          nullable: true
+          type: string
+        exchange_rate:
+          description: If applicable, this transaction uses an exchange rate. If money
+            converts from currency A to currency B, then the `amount` in currency
+            A, multiplied by the `exchange_rate`, equals the `amount` in currency
+            B. For example, if you charge a customer 10.00 EUR, the PaymentIntent's
+            `amount` is `1000` and `currency` is `eur`. If this converts to 12.34
+            USD in your Stripe account, the BalanceTransaction's `amount` is `1234`,
+            its `currency` is `usd`, and the `exchange_rate` is `1.234`.
+          nullable: true
+          type: number
+        fee:
+          description: Fees (in cents (or local equivalent)) paid for this transaction.
+            Represented as a positive integer when assessed.
+          type: integer
+        fee_details:
+          description: Detailed breakdown of fees (in cents (or local equivalent))
+            paid for this transaction.
+          items:
+            $ref: '#/components/schemas/fee'
+          type: array
+        id:
+          description: Unique identifier for the object.
+          maxLength: 5000
+          type: string
+        net:
+          description: Net impact to a Stripe balance (in cents (or local equivalent)).
+            A positive value represents incrementing a Stripe balance, and a negative
+            value decrementing a Stripe balance. You can calculate the net impact
+            of a transaction on a balance by `amount` - `fee`
+          type: integer
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - balance_transaction
+          type: string
+        reporting_category:
+          description: Learn more about how [reporting categories](https://stripe.com/docs/reports/reporting-categories)
+            can help you understand balance transactions from an accounting perspective.
+          maxLength: 5000
+          type: string
+        source:
+          anyOf:
+          - maxLength: 5000
+            type: string
+          - $ref: '#/components/schemas/application_fee'
+          - $ref: '#/components/schemas/charge'
+          - $ref: '#/components/schemas/connect_collection_transfer'
+          - $ref: '#/components/schemas/customer_cash_balance_transaction'
+          - $ref: '#/components/schemas/dispute'
+          - $ref: '#/components/schemas/fee_refund'
+          - $ref: '#/components/schemas/issuing.authorization'
+          - $ref: '#/components/schemas/issuing.dispute'
+          - $ref: '#/components/schemas/issuing.transaction'
+          - $ref: '#/components/schemas/payout'
+          - $ref: '#/components/schemas/refund'
+          - $ref: '#/components/schemas/reserve_transaction'
+          - $ref: '#/components/schemas/tax_deducted_at_source'
+          - $ref: '#/components/schemas/topup'
+          - $ref: '#/components/schemas/transfer'
+          - $ref: '#/components/schemas/transfer_reversal'
+          description: This transaction relates to the Stripe object.
+          nullable: true
+          x-expansionResources:
+            oneOf:
+            - $ref: '#/components/schemas/application_fee'
+            - $ref: '#/components/schemas/charge'
+            - $ref: '#/components/schemas/connect_collection_transfer'
+            - $ref: '#/components/schemas/customer_cash_balance_transaction'
+            - $ref: '#/components/schemas/dispute'
+            - $ref: '#/components/schemas/fee_refund'
+            - $ref: '#/components/schemas/issuing.authorization'
+            - $ref: '#/components/schemas/issuing.dispute'
+            - $ref: '#/components/schemas/issuing.transaction'
+            - $ref: '#/components/schemas/payout'
+            - $ref: '#/components/schemas/refund'
+            - $ref: '#/components/schemas/reserve_transaction'
+            - $ref: '#/components/schemas/tax_deducted_at_source'
+            - $ref: '#/components/schemas/topup'
+            - $ref: '#/components/schemas/transfer'
+            - $ref: '#/components/schemas/transfer_reversal'
+          x-stripeBypassValidation: true
+        status:
+          description: The transaction's net funds status in the Stripe balance, which
+            are either `available` or `pending`.
+          maxLength: 5000
+          type: string
+        type:
+          description: 'Transaction type: `tax_fund`, `adjustment`, `advance`, `advance_funding`,
+            `anticipation_repayment`, `application_fee`, `application_fee_refund`,
+            `charge`, `climate_order_purchase`, `climate_order_refund`, `connect_collection_transfer`,
+            `contribution`, `inbound_transfer`, `inbound_transfer_reversal`, `issuing_authorization_hold`,
+            `issuing_authorization_release`, `issuing_dispute`, `issuing_transaction`,
+            `obligation_outbound`, `obligation_reversal_inbound`, `payment`, `payment_failure_refund`,
+            `payment_network_reserve_hold`, `payment_network_reserve_release`, `payment_refund`,
+            `payment_reversal`, `payment_unreconciled`, `payout`, `payout_cancel`,
+            `payout_failure`, `payout_minimum_balance_hold`, `payout_minimum_balance_release`,
+            `refund`, `refund_failure`, `reserve_transaction`, `reserved_funds`, `reserve_hold`,
+            `reserve_release`, `stripe_fee`, `stripe_fx_fee`, `stripe_balance_payment_debit`,
+            `stripe_balance_payment_debit_reversal`, `tax_fee`, `topup`, `topup_reversal`,
+            `transfer`, `transfer_cancel`, `transfer_failure`, `transfer_refund`,
+            or `fee_credit_funding`. Learn more about [balance transaction types and
+            what they represent](https://stripe.com/docs/reports/balance-transaction-types).
+            To classify transactions for accounting purposes, consider `reporting_category`
+            instead.'
+          enum:
+          - adjustment
+          - advance
+          - advance_funding
+          - anticipation_repayment
+          - application_fee
+          - application_fee_refund
+          - charge
+          - climate_order_purchase
+          - climate_order_refund
+          - connect_collection_transfer
+          - contribution
+          - fee_credit_funding
+          - inbound_transfer
+          - inbound_transfer_reversal
+          - issuing_authorization_hold
+          - issuing_authorization_release
+          - issuing_dispute
+          - issuing_transaction
+          - obligation_outbound
+          - obligation_reversal_inbound
+          - payment
+          - payment_failure_refund
+          - payment_network_reserve_hold
+          - payment_network_reserve_release
+          - payment_refund
+          - payment_reversal
+          - payment_unreconciled
+          - payout
+          - payout_cancel
+          - payout_failure
+          - payout_minimum_balance_hold
+          - payout_minimum_balance_release
+          - refund
+          - refund_failure
+          - reserve_hold
+          - reserve_release
+          - reserve_transaction
+          - reserved_funds
+          - stripe_balance_payment_debit
+          - stripe_balance_payment_debit_reversal
+          - stripe_fee
+          - stripe_fx_fee
+          - tax_fee
+          - tax_fund
+          - topup
+          - topup_reversal
+          - transfer
+          - transfer_cancel
+          - transfer_failure
+          - transfer_refund
+          type: string
+      required:
+      - amount
+      - available_on
+      - balance_type
+      - created
+      - currency
+      - fee
+      - fee_details
+      - id
+      - net
+      - object
+      - reporting_category
+      - status
+      - type
+      title: Balance Transaction
+      type: object
+      x-expandableFields:
+      - fee_details
+      - source
+      x-resourceId: balance_transaction
+    bank_account:
+      description: 'These bank accounts are payment methods on `Customer` objects.
+
+
+        On the other hand [External Accounts](/api#external_accounts) are transfer
+
+        destinations on `Account` objects for connected accounts.
+
+        They can be bank accounts or debit cards as well, and are documented in the
+        links above.
+
+
+        Related guide: [Bank debits and transfers](/payments/bank-debits-transfers)'
+      properties:
+        account:
+          anyOf:
+          - maxLength: 5000
+            type: string
+          - $ref: '#/components/schemas/account'
+          description: The account this bank account belongs to. Only applicable on
+            Accounts (not customers or recipients) This property is only available
+            when returned as an [External Account](/api/external_account_bank_accounts/object)
+            where [controller.is_controller](/api/accounts/object#account_object-controller-is_controller)
+            is `true`.
+          nullable: true
+          x-expansionResources:
+            oneOf:
+            - $ref: '#/components/schemas/account'
+        account_holder_name:
+          description: The name of the person or business that owns the bank account.
+          maxLength: 5000
+          nullable: true
+          type: string
+        account_holder_type:
+          description: The type of entity that holds the account. This can be either
+            `individual` or `company`.
+          maxLength: 5000
+          nullable: true
+          type: string
+        account_type:
+          description: The bank account type. This can only be `checking` or `savings`
+            in most countries. In Japan, this can only be `futsu` or `toza`.
+          maxLength: 5000
+          nullable: true
+          type: string
+        available_payout_methods:
+          description: A set of available payout methods for this bank account. Only
+            values from this set should be passed as the `method` when creating a
+            payout.
+          items:
+            enum:
+            - instant
+            - standard
+            type: string
+          nullable: true
+          type: array
+        bank_name:
+          description: Name of the bank associated with the routing number (e.g.,
+            `WELLS FARGO`).
+          maxLength: 5000
+          nullable: true
+          type: string
+        country:
+          description: Two-letter ISO code representing the country the bank account
+            is located in.
+          maxLength: 5000
+          type: string
+        currency:
+          description: Three-letter [ISO code for the currency](https://stripe.com/docs/payouts)
+            paid out to the bank account.
+          format: currency
+          type: string
+        customer:
+          anyOf:
+          - maxLength: 5000
+            type: string
+          - $ref: '#/components/schemas/customer'
+          - $ref: '#/components/schemas/deleted_customer'
+          description: The ID of the customer that the bank account is associated
+            with.
+          nullable: true
+          x-expansionResources:
+            oneOf:
+            - $ref: '#/components/schemas/customer'
+            - $ref: '#/components/schemas/deleted_customer'
+        default_for_currency:
+          description: Whether this bank account is the default external account for
+            its currency.
+          nullable: true
+          type: boolean
+        fingerprint:
+          description: Uniquely identifies this particular bank account. You can use
+            this attribute to check whether two bank accounts are the same.
+          maxLength: 5000
+          nullable: true
+          type: string
+        future_requirements:
+          anyOf:
+          - $ref: '#/components/schemas/external_account_requirements'
+          description: Information about the [upcoming new requirements for the bank
+            account](https://docs.stripe.com/connect/custom-accounts/future-requirements),
+            including what information needs to be collected, and by when.
+          nullable: true
+        id:
+          description: Unique identifier for the object.
+          maxLength: 5000
+          type: string
+        last4:
+          description: The last four digits of the bank account number.
+          maxLength: 5000
+          type: string
+        metadata:
+          additionalProperties:
+            maxLength: 500
+            type: string
+          description: Set of [key-value pairs](https://docs.stripe.com/api/metadata)
+            that you can attach to an object. This can be useful for storing additional
+            information about the object in a structured format.
+          nullable: true
+          type: object
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - bank_account
+          type: string
+        requirements:
+          anyOf:
+          - $ref: '#/components/schemas/external_account_requirements'
+          description: Information about the requirements for the bank account, including
+            what information needs to be collected.
+          nullable: true
+        routing_number:
+          description: The routing transit number for the bank account.
+          maxLength: 5000
+          nullable: true
+          type: string
+        status:
+          description: 'For bank accounts, possible values are `new`, `validated`,
+            `verified`, `verification_failed`, `tokenized_account_number_deactivated`
+            or `errored`. A bank account that hasn''t had any activity or validation
+            performed is `new`. If Stripe can determine that the bank account exists,
+            its status will be `validated`. Note that there often isn’t enough information
+            to know (e.g., for smaller credit unions), and the validation is not always
+            run. If customer bank account verification has succeeded, the bank account
+            status will be `verified`. If the verification failed for any reason,
+            such as microdeposit failure, the status will be `verification_failed`.
+            If the status is `tokenized_account_number_deactivated`, the account utilizes
+            a tokenized account number which has been deactivated due to expiration
+            or revocation. This account will need to be reverified to continue using
+            it for money movement. If a payout sent to this bank account fails, we''ll
+            set the status to `errored` and will not continue to send [scheduled payouts](https://stripe.com/docs/payouts#payout-schedule)
+            until the bank details are updated.
+
+
+            For external accounts, possible values are `new`, `errored`, `verification_failed`,
+            and `tokenized_account_number_deactivated`. If a payout fails, the status
+            is set to `errored` and scheduled payouts are stopped until account details
+            are updated. In the US and India, if we can''t [verify the owner of the
+            bank account](https://support.stripe.com/questions/bank-account-ownership-verification),
+            we''ll set the status to `verification_failed`. Other validations aren''t
+            run against external accounts because they''re only used for payouts.
+            This means the other statuses don''t apply.'
+          maxLength: 5000
+          type: string
+      required:
+      - country
+      - currency
+      - id
+      - last4
+      - object
+      - status
+      title: Bank Account
+      type: object
+      x-expandableFields:
+      - account
+      - customer
+      - future_requirements
+      - requirements
+      x-resourceId: bank_account
+    capability:
+      description: 'This is an object representing a capability for a Stripe account.
+
+
+        Related guide: [Account capabilities](https://docs.stripe.com/connect/account-capabilities)'
+      properties:
+        account:
+          anyOf:
+          - maxLength: 5000
+            type: string
+          - $ref: '#/components/schemas/account'
+          description: The account for which the capability enables functionality.
+          x-expansionResources:
+            oneOf:
+            - $ref: '#/components/schemas/account'
+        future_requirements:
+          $ref: '#/components/schemas/account_capability_future_requirements'
+        id:
+          description: The identifier for the capability.
+          maxLength: 5000
+          type: string
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - capability
+          type: string
+        requested:
+          description: Whether the capability has been requested.
+          type: boolean
+        requested_at:
+          description: Time at which the capability was requested. Measured in seconds
+            since the Unix epoch.
+          format: unix-time
+          nullable: true
+          type: integer
+        requirements:
+          $ref: '#/components/schemas/account_capability_requirements'
+        status:
+          description: The status of the capability.
+          enum:
+          - active
+          - inactive
+          - pending
+          - unrequested
+          type: string
+          x-stripeBypassValidation: true
+      required:
+      - account
+      - id
+      - object
+      - requested
+      - status
+      title: Capability
+      type: object
+      x-expandableFields:
+      - account
+      - future_requirements
+      - requirements
+      x-resourceId: capability
+    country_spec:
+      description: 'Stripe needs to collect certain pieces of information about each
+        account
+
+        created. These requirements can differ depending on the account''s country.
+        The
+
+        Country Specs API makes these rules available to your integration.
+
+
+        You can also view the information from this API call as [an online
+
+        guide](/docs/connect/required-verification-information).'
+      properties:
+        default_currency:
+          description: The default currency for this country. This applies to both
+            payment methods and bank accounts.
+          maxLength: 5000
+          type: string
+        id:
+          description: Unique identifier for the object. Represented as the ISO country
+            code for this country.
+          maxLength: 5000
+          type: string
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - country_spec
+          type: string
+        supported_bank_account_currencies:
+          additionalProperties:
+            items:
+              maxLength: 5000
+              type: string
+            type: array
+          description: Currencies that can be accepted in the specific country (for
+            transfers).
+          type: object
+        supported_payment_currencies:
+          description: Currencies that can be accepted in the specified country (for
+            payments).
+          items:
+            maxLength: 5000
+            type: string
+          type: array
+        supported_payment_methods:
+          description: Payment methods available in the specified country. You may
+            need to enable some payment methods (e.g., [ACH](https://stripe.com/docs/ach))
+            on your account before they appear in this list. The `stripe` payment
+            method refers to [charging through your platform](https://stripe.com/docs/connect/destination-charges).
+          items:
+            maxLength: 5000
+            type: string
+          type: array
+        supported_transfer_countries:
+          description: Countries that can accept transfers from the specified country.
+          items:
+            maxLength: 5000
+            type: string
+          type: array
+        verification_fields:
+          $ref: '#/components/schemas/country_spec_verification_fields'
+      required:
+      - default_currency
+      - id
+      - object
+      - supported_bank_account_currencies
+      - supported_payment_currencies
+      - supported_payment_methods
+      - supported_transfer_countries
+      - verification_fields
+      title: Country Spec
+      type: object
+      x-expandableFields:
+      - verification_fields
+      x-resourceId: country_spec
+    credit_note:
+      description: 'Issue a credit note to adjust an invoice''s amount after the invoice
+        is finalized.
+
+
+        Related guide: [Credit notes](https://docs.stripe.com/billing/invoices/credit-notes)'
+      properties:
+        amount:
+          description: The integer amount in cents (or local equivalent) representing
+            the total amount of the credit note, including tax.
+          type: integer
+        amount_shipping:
+          description: This is the sum of all the shipping amounts.
+          type: integer
+        created:
+          description: Time at which the object was created. Measured in seconds since
+            the Unix epoch.
+          format: unix-time
+          type: integer
+        currency:
+          description: Three-letter [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html),
+            in lowercase. Must be a [supported currency](https://stripe.com/docs/currencies).
+          format: currency
+          type: string
+        customer:
+          anyOf:
+          - maxLength: 5000
+            type: string
+          - $ref: '#/components/schemas/customer'
+          - $ref: '#/components/schemas/deleted_customer'
+          description: ID of the customer.
+          x-expansionResources:
+            oneOf:
+            - $ref: '#/components/schemas/customer'
+            - $ref: '#/components/schemas/deleted_customer'
+        customer_account:
+          description: ID of the account representing the customer.
+          maxLength: 5000
+          nullable: true
+          type: string
+        customer_balance_transaction:
+          anyOf:
+          - maxLength: 5000
+            type: string
+          - $ref: '#/components/schemas/customer_balance_transaction'
+          description: Customer balance transaction related to this credit note.
+          nullable: true
+          x-expansionResources:
+            oneOf:
+            - $ref: '#/components/schemas/customer_balance_transaction'
+        discount_amount:
+          description: The integer amount in cents (or local equivalent) representing
+            the total amount of discount that was credited.
+          type: integer
+        discount_amounts:
+          description: The aggregate amounts calculated per discount for all line
+            items.
+          items:
+            $ref: '#/components/schemas/discounts_resource_discount_amount'
+          type: array
+        effective_at:
+          description: The date when this credit note is in effect. Same as `created`
+            unless overwritten. When defined, this value replaces the system-generated
+            'Date of issue' printed on the credit note PDF.
+          format: unix-time
+          nullable: true
+          type: integer
+        id:
+          description: Unique identifier for the object.
+          maxLength: 5000
+          type: string
+        invoice:
+          anyOf:
+          - maxLength: 5000
+            type: string
+          - $ref: '#/components/schemas/invoice'
+          description: ID of the invoice.
+          x-expansionResources:
+            oneOf:
+            - $ref: '#/components/schemas/invoice'
+        lines:
+          description: Line items that make up the credit note
+          properties:
+            data:
+              description: Details about each object.
+              items:
+                $ref: '#/components/schemas/credit_note_line_item'
+              type: array
+            has_more:
+              description: True if this list has another page of items after this
+                one that can be fetched.
+              type: boolean
+            object:
+              description: String representing the object's type. Objects of the same
+                type share the same value. Always has the value `list`.
+              enum:
+              - list
+              type: string
+            url:
+              description: The URL where this list can be accessed.
+              maxLength: 5000
+              type: string
+          required:
+          - data
+          - has_more
+          - object
+          - url
+          title: CreditNoteLinesList
+          type: object
+          x-expandableFields:
+          - data
+        livemode:
+          description: If the object exists in live mode, the value is `true`. If
+            the object exists in test mode, the value is `false`.
+          type: boolean
+        memo:
+          description: Customer-facing text that appears on the credit note PDF.
+          maxLength: 5000
+          nullable: true
+          type: string
+        metadata:
+          additionalProperties:
+            maxLength: 500
+            type: string
+          description: Set of [key-value pairs](https://docs.stripe.com/api/metadata)
+            that you can attach to an object. This can be useful for storing additional
+            information about the object in a structured format.
+          nullable: true
+          type: object
+        number:
+          description: A unique number that identifies this particular credit note
+            and appears on the PDF of the credit note and its associated invoice.
+          maxLength: 5000
+          type: string
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - credit_note
+          type: string
+        out_of_band_amount:
+          description: Amount that was credited outside of Stripe.
+          nullable: true
+          type: integer
+        pdf:
+          description: The link to download the PDF of the credit note.
+          maxLength: 5000
+          type: string
+        post_payment_amount:
+          description: The amount of the credit note that was refunded to the customer,
+            credited to the customer's balance, credited outside of Stripe, or any
+            combination thereof.
+          type: integer
+        pre_payment_amount:
+          description: The amount of the credit note by which the invoice's `amount_remaining`
+            and `amount_due` were reduced.
+          type: integer
+        pretax_credit_amounts:
+          description: 'The pretax credit amounts (ex: discount, credit grants, etc)
+            for all line items.'
+          items:
+            $ref: '#/components/schemas/credit_notes_pretax_credit_amount'
+          type: array
+        reason:
+          description: Reason for issuing this credit note, one of `duplicate`, `fraudulent`,
+            `order_change`, or `product_unsatisfactory`
+          enum:
+          - duplicate
+          - fraudulent
+          - order_change
+          - product_unsatisfactory
+          nullable: true
+          type: string
+          x-stripeBypassValidation: true
+        refunds:
+          description: Refunds related to this credit note.
+          items:
+            $ref: '#/components/schemas/credit_note_refund'
+          type: array
+        shipping_cost:
+          anyOf:
+          - $ref: '#/components/schemas/invoices_resource_shipping_cost'
+          description: The details of the cost of shipping, including the ShippingRate
+            applied to the invoice.
+          nullable: true
+        status:
+          description: Status of this credit note, one of `issued` or `void`. Learn
+            more about [voiding credit notes](https://docs.stripe.com/billing/invoices/credit-notes#voiding).
+          enum:
+          - issued
+          - void
+          type: string
+          x-stripeBypassValidation: true
+        subtotal:
+          description: The integer amount in cents (or local equivalent) representing
+            the amount of the credit note, excluding exclusive tax and invoice level
+            discounts.
+          type: integer
+        subtotal_excluding_tax:
+          description: The integer amount in cents (or local equivalent) representing
+            the amount of the credit note, excluding all tax and invoice level discounts.
+          nullable: true
+          type: integer
+        total:
+          description: The integer amount in cents (or local equivalent) representing
+            the total amount of the credit note, including tax and all discount.
+          type: integer
+        total_excluding_tax:
+          description: The integer amount in cents (or local equivalent) representing
+            the total amount of the credit note, excluding tax, but including discounts.
+          nullable: true
+          type: integer
+        total_taxes:
+          description: The aggregate tax information for all line items.
+          items:
+            $ref: '#/components/schemas/billing_bill_resource_invoicing_taxes_tax'
+          nullable: true
+          type: array
+        type:
+          description: Type of this credit note, one of `pre_payment` or `post_payment`.
+            A `pre_payment` credit note means it was issued when the invoice was open.
+            A `post_payment` credit note means it was issued when the invoice was
+            paid.
+          enum:
+          - mixed
+          - post_payment
+          - pre_payment
+          type: string
+        voided_at:
+          description: The time that the credit note was voided.
+          format: unix-time
+          nullable: true
+          type: integer
+      required:
+      - amount
+      - amount_shipping
+      - created
+      - currency
+      - customer
+      - discount_amount
+      - discount_amounts
+      - id
+      - invoice
+      - lines
+      - livemode
+      - number
+      - object
+      - pdf
+      - post_payment_amount
+      - pre_payment_amount
+      - pretax_credit_amounts
+      - refunds
+      - status
+      - subtotal
+      - total
+      - type
+      title: Credit Note
+      type: object
+      x-expandableFields:
+      - customer
+      - customer_balance_transaction
+      - discount_amounts
+      - invoice
+      - lines
+      - pretax_credit_amounts
+      - refunds
+      - shipping_cost
+      - total_taxes
+      x-resourceId: credit_note
+    event:
+      description: 'Snapshot events allow you to track and react to activity in your
+        Stripe integration. When
+
+        the state of another API resource changes, Stripe creates an `Event` object
+        that contains
+
+        all the relevant information associated with that action, including the affected
+        API
+
+        resource. For example, a successful payment triggers a `charge.succeeded`
+        event, which
+
+        contains the `Charge` in the event''s data property. Some actions trigger
+        multiple events.
+
+        For example, if you create a new subscription for a customer, it triggers
+        both a
+
+        `customer.subscription.created` event and a `charge.succeeded` event.
+
+
+        Configure an event destination in your account to listen for events that represent
+        actions
+
+        your integration needs to respond to. Additionally, you can retrieve an individual
+        event or
+
+        a list of events from the API.
+
+
+        [Connect](https://docs.stripe.com/connect) platforms can also receive event
+        notifications
+
+        that occur in their connected accounts. These events include an account attribute
+        that
+
+        identifies the relevant connected account.
+
+
+        You can access events through the [Retrieve Event API](https://docs.stripe.com/api/events#retrieve_event)
+
+        for 30 days.'
+      properties:
+        account:
+          description: The connected account that originates the event.
+          maxLength: 5000
+          type: string
+        api_version:
+          description: The Stripe API version used to render `data` when the event
+            was created. The contents of `data` never change, so this value remains
+            static regardless of the API version currently in use. This property is
+            populated only for events created on or after October 31, 2014.
+          maxLength: 5000
+          nullable: true
+          type: string
+        context:
+          description: Authentication context needed to fetch the event or related
+            object.
+          maxLength: 5000
+          type: string
+        created:
+          description: Time at which the object was created. Measured in seconds since
+            the Unix epoch.
+          format: unix-time
+          type: integer
+        data:
+          $ref: '#/components/schemas/notification_event_data'
+        id:
+          description: Unique identifier for the object.
+          maxLength: 5000
+          type: string
+        livemode:
+          description: If the object exists in live mode, the value is `true`. If
+            the object exists in test mode, the value is `false`.
+          type: boolean
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - event
+          type: string
+        pending_webhooks:
+          description: Number of webhooks that haven't been successfully delivered
+            (for example, to return a 20x response) to the URLs you specify.
+          type: integer
+        request:
+          anyOf:
+          - $ref: '#/components/schemas/notification_event_request'
+          description: Information on the API request that triggers the event.
+          nullable: true
+        type:
+          description: Description of the event (for example, `invoice.created` or
+            `charge.refunded`).
+          maxLength: 5000
+          type: string
+      required:
+      - created
+      - data
+      - id
+      - livemode
+      - object
+      - pending_webhooks
+      - type
+      title: Event
+      type: object
+      x-expandableFields:
+      - data
+      - request
+      x-resourceId: event
+    exchange_rate:
+      description: '[Deprecated] The `ExchangeRate` APIs are deprecated. Please use
+        the [FX Quotes API](https://docs.stripe.com/payments/currencies/localize-prices/fx-quotes-api)
+        instead.
+
+
+        `ExchangeRate` objects allow you to determine the rates that Stripe is currently
+
+        using to convert from one currency to another. Since this number is variable
+
+        throughout the day, there are various reasons why you might want to know the
+        current
+
+        rate (for example, to dynamically price an item for a user with a default
+
+        payment in a foreign currency).
+
+
+        Please refer to our [Exchange Rates API](https://docs.stripe.com/fx-rates)
+        guide for more details.
+
+
+        *[Note: this integration path is supported but no longer recommended]* Additionally,
+
+        you can guarantee that a charge is made with an exchange rate that you expect
+        is
+
+        current. To do so, you must pass in the exchange_rate to charges endpoints.
+        If the
+
+        value is no longer up to date, the charge won''t go through. Please refer
+        to our
+
+        [Using with charges](https://docs.stripe.com/exchange-rates) guide for more
+        details.
+
+
+        -----
+
+
+        &nbsp;
+
+
+        *This Exchange Rates API is a Beta Service and is subject to Stripe''s terms
+        of service. You may use the API solely for the purpose of transacting on Stripe.
+        For example, the API may be queried in order to:*
+
+
+        - *localize prices for processing payments on Stripe*
+
+        - *reconcile Stripe transactions*
+
+        - *determine how much money to send to a connected account*
+
+        - *determine app fees to charge a connected account*
+
+
+        *Using this Exchange Rates API beta for any purpose other than to transact
+        on Stripe is strictly prohibited and constitutes a violation of Stripe''s
+        terms of service.*'
+      properties:
+        id:
+          description: Unique identifier for the object. Represented as the three-letter
+            [ISO currency code](https://www.iso.org/iso-4217-currency-codes.html)
+            in lowercase.
+          maxLength: 5000
+          type: string
+        object:
+          description: String representing the object's type. Objects of the same
+            type share the same value.
+          enum:
+          - exchange_rate
+          type: string
+        rates:
+          additionalProperties:
+            type: number
+          description: Hash where the keys are supported currencies and the values
+            are the exchange rate at which the base id currency converts to the key
+            currency.
+          type: object
+      required:
+      - id
+      - object
+      - rates
+      title: Exchange Rate
+      type: object
+      x-expandableFields: []
+      x-resourceId: exchange_rate

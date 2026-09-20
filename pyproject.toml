@@ -1,0 +1,13 @@
+[project]
+name = "sdiff"
+version = "0.1.0"
+description = "Diff two OpenAPI specs and classify every change as BREAKING, BEHAVIOUR, or COSMETIC"
+requires-python = ">=3.10"
+dependencies = [
+    "typesafe-sdk",
+    "PyYAML",
+    "requests",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
