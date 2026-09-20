@@ -47,9 +47,7 @@ No network needed for the tests — `test_sdiff.py` uses a fake judge.
   rather than writing a new class.
 - No new dependencies unless the standard library genuinely can't do it.
 - Bug fixes should go to the root cause, not the symptom that got reported.
-- Run `pytest -q` first. If your change touches the `examples/` files, the
-  `sdiff-check` CI job will diff them against `main` and fail the check if
-  it finds a BREAKING change.
+- Run `pytest -q` first. CI just runs the same suite, no network.
 
 ## Scope
 

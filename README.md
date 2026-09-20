@@ -158,9 +158,12 @@ Run it with `--judge jev` for the model this tool's actually built around.
 
 ## CI
 
-`.github/workflows/sdiff-check.yml` runs this on its own PRs: any time a PR
-touches a file under `examples/`, it diffs that file against the base
-branch and fails the check on a BREAKING result.
+`.github/workflows/test.yml` runs `pytest -q` on push and PR. No live judge
+runs in CI — the judge is non-deterministic and needs a network call and an
+API key, which makes it a bad fit for a merge gate. `sdiff` itself is meant
+to be run in *your* CI against *your* spec/manifest/policy changes; this
+repo's own CI just proves the deterministic half (parse/align/diff/rules)
+works.
 
 ## Install
 
