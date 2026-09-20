@@ -2,13 +2,19 @@
 name = "sdiff"
 version = "0.1.0"
 description = "Diff two OpenAPI specs and classify every change as BREAKING, BEHAVIOUR, or COSMETIC"
+readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
+authors = [{ name = "Lorcan Chinnock", email = "ljchinnock@gmail.com" }]
+keywords = ["openapi", "diff", "api-breaking-change", "llm-eval", "cli"]
 dependencies = [
     "typesafe-sdk",
     "PyYAML",
     "requests",
 ]
+
+[project.urls]
+Repository = "https://github.com/LorcanChinnock/sdiff"
 
 [project.optional-dependencies]
 dev = ["pytest"]

@@ -258,9 +258,9 @@ class ChatJudge:
 
         self._requests = requests
         self._base_url = os.environ.get("OPENAI_BASE_URL", "https://openrouter.ai/api/v1").rstrip("/")
-        self._api_key = os.environ.get("OPENROUTER_API_KEY") or os.environ.get("OPENAI_API_KEY")
+        self._api_key = os.environ.get("OPENROUTER_API_KEY")
         if not self._api_key:
-            raise RuntimeError("Set OPENROUTER_API_KEY or OPENAI_API_KEY for --judge chat")
+            raise RuntimeError("Set OPENROUTER_API_KEY for --judge chat")
         self._model = model or os.environ.get("SDIFF_CHAT_MODEL", "openai/gpt-5-nano")
 
     def judge(self, path: str, old, new) -> Verdict:

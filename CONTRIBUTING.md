@@ -3,7 +3,7 @@
 This is a small tool and it should stay small. Before adding something,
 check whether it actually needs to exist.
 
-## Working on it
+## Setup
 
 ```
 pip install -e .[dev]
@@ -12,7 +12,7 @@ pytest -q
 
 No network needed for the tests — `test_sdiff.py` uses a fake judge.
 
-## Guidelines
+## Before opening a PR
 
 - If you touch `flatten()`, `diff()`, or the cross-check logic, add or
   update an assertion in `test_sdiff.py`. It's one file, keep it that way.
@@ -24,15 +24,12 @@ No network needed for the tests — `test_sdiff.py` uses a fake judge.
   rather than writing a new class.
 - No new dependencies unless the standard library genuinely can't do it.
 - Bug fixes should go to the root cause, not the symptom that got reported.
+- Run `pytest -q` first. If your change touches the `examples/` files, the
+  `sdiff-check` CI job will diff them against `main` and fail the check if
+  it finds a BREAKING change.
 
-## Out of scope for now
+## Scope
 
 Rename detection and fuzzy alignment across formats other than OpenAPI are
 known gaps, not bugs — see the README's "Known limits" section. Open an
 issue if you've got a real spec that needs it before building it.
-
-## Pull requests
-
-Keep them focused. Run `pytest -q` first. If your change touches the
-`examples/` files, the `sdiff-check` CI job will diff them against `main`
-and fail the check if it finds a BREAKING change.

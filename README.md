@@ -45,8 +45,8 @@ sdiff v1.yaml v2.yaml --judge chat    # cheap fallback, needs OPENROUTER_API_KEY
 ```
 
 `ChatJudge` talks to any OpenAI-compatible endpoint and defaults to
-OpenRouter, so an existing `OPENROUTER_API_KEY` just works. Override with
-`OPENAI_BASE_URL`, `OPENAI_API_KEY`, or `--chat-model`. Both judges return
+OpenRouter, so an existing `OPENROUTER_API_KEY` just works. Override the
+endpoint or model with `OPENAI_BASE_URL` or `--chat-model`. Both judges return
 the same shape, so swapping is the one flag — nothing else in the code path
 changes.
 
